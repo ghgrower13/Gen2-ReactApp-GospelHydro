@@ -20,23 +20,36 @@ function App() {
 
   useEffect(() => {
     async function setupSubscription() {
+      console.log("⚙️ Setting up PubSub subscription...");
       try {
-        const currentUser = await getCurrentUser();
-        if (!currentUser) throw new Error("User not logged in");
+        const user = await getCurrentUser();
+        console.log("👤 Current user:", user);
   
         const session = await fetchAuthSession();
         console.log("✅ Authenticated Cognito ID:", session.identityId);
   
-        const subscription = pubsub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData').subscribe({
+        console.log("📡 Subscribing to topic: growTent/MKR1010_TempSensor_Alex/sensorData");
+  
+        const subscription = pubsub.subscribe({ topics: 'growTent/MKR1010_TempSensor_Alex/sensorData'}).subscribe({
           next: (data) => {
-            console.log("📥 Incoming message:", data);
-            // handle message...
+            console.log('Message recieved', data);
+            try {
+              const raw = data?.value;
+              const message = typeof raw === "string" ? JSON.parse(raw) : raw;
+              console.log("🌡️ Parsed message:", message);
+              setMessages(prev => [...prev, message]);
+            } catch (err) {
+              console.error("❌ Error parsing message:", err);
+            }
           },
-          error: (err) => console.error("❌ PubSub error:", err),
+          error: (error) => console.error("❌ PubSub error:", error),
           complete: () => console.log("✅ PubSub subscription completed")
         });
   
-        return () => subscription.unsubscribe();
+        return () => {
+          console.log("🛑 Unsubscribing from PubSub");
+          subscription.unsubscribe();
+        };
   
       } catch (err) {
         console.error("❌ User not authenticated or error during PubSub setup:", err);
