@@ -35,17 +35,19 @@ function App() {
           const subscription = pubsub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData').subscribe({
             next: (data) => {
               console.log("📥 Full message object:", data);
-              console.log("📦 Raw data.value:", data?.value);
-        
+            
               try {
-                // If data.value is the JSON object you need
-                const message = data?.value;
-                console.log("🌡️ Parsed Temperature Data:", message);
+                const raw = data?.value;
+                console.log("📦 Raw data.value:", raw);
+            
+                const message = typeof raw === "string" ? JSON.parse(raw) : raw;
+                console.log("🌡️ Parsed temperature:", message);
                 setMessages(prev => [...prev, message]);
               } catch (err) {
-                console.error("❌ Failed to process message:", err);
+                console.error("❌ Error parsing message:", err);
               }
-            },
+            }
+            
             error: (error) => console.error('❌ PubSub error:', error),
             complete: () => console.log('✅ PubSub subscription completed'),
           });
