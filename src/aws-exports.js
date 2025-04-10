@@ -11,20 +11,26 @@ const awsmobile = {
     aws_cognito_mfa_configuration: "OFF",
     aws_cognito_mfa_types: ["SMS"],
     aws_cognito_password_protection_settings: {
-        passwordPolicyMinLength: 8,
-        passwordPolicyCharacters: []
+      passwordPolicyMinLength: 8,
+      passwordPolicyCharacters: []
     },
     aws_cognito_verification_mechanisms: ["EMAIL"],
-
-    // 🔥 Add missing Auth settings
+  
     Auth: {
-        region: "us-east-1",
-        userPoolId: "us-east-1_TRav7O8Va",
-        userPoolWebClientId: "67kkj6duf572rn2m2scjmu9e8h",
-        identityPoolId: "us-east-1:f1aaadfc-90cb-4380-bf52-f31ad1ba4915",
-        mandatorySignIn: false, // Set to true if users must sign in before using the app
-        authenticationFlowType: "USER_PASSWORD_AUTH" // Ensure password-based auth is enabled
+      region: "us-east-1",
+      userPoolId: "us-east-1_TRav7O8Va",
+      userPoolWebClientId: "67kkj6duf572rn2m2scjmu9e8h",
+      identityPoolId: "us-east-1:f1aaadfc-90cb-4380-bf52-f31ad1ba4915",
+      mandatorySignIn: false,
+      authenticationFlowType: "USER_PASSWORD_AUTH"
+    },
+  
+    // ✅ Add this
+    PubSub: {
+      region: "us-east-1",
+      endpoint: "wss://a78qswyme5zdw-ats.iot.us-east-1.amazonaws.com/mqtt"
     }
-};
-
-export default awsmobile;
+  };
+  
+  export default awsmobile;
+  
