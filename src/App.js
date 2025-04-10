@@ -46,7 +46,7 @@ function App() {
               } catch (err) {
                 console.error("❌ Error parsing message:", err);
               }
-            }
+            },
             
             error: (error) => console.error('❌ PubSub error:', error),
             complete: () => console.log('✅ PubSub subscription completed'),
