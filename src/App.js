@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Amplify, PubSub } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import { PubSub } from '@aws-amplify/pubsub'; // ✅ correct import for v6+
 import { Authenticator } from '@aws-amplify/ui-react';
 import awsExports from './aws-exports';
 import '@aws-amplify/ui-react/styles.css';
 
 Amplify.configure(awsExports);
+
 
 function App() {
   const [isReady, setIsReady] = useState(false);
