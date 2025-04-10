@@ -17,18 +17,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const subscription = PubSub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData
-').subscribe({
+    const subscription = PubSub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData').subscribe({
       next: (data) => {
         console.log('📥 Incoming message:', data);
-        setMessages(prev => [...prev, data.value]); // Add message to UI
+        setMessages(prev => [...prev, data.value]);
       },
       error: (error) => console.error('❌ PubSub error:', error),
       complete: () => console.log('✅ Subscription complete')
     });
-
-    return () => subscription.unsubscribe(); // Clean up
+  
+    return () => subscription.unsubscribe();
   }, []);
+  
 
   if (!isReady) return <div>Loading...</div>;
 
