@@ -28,7 +28,7 @@ const awsmobile = {
       userPoolId: "us-east-1_TRav7O8Va",
       userPoolWebClientId: "67kkj6duf572rn2m2scjmu9e8h",
       identityPoolId: "us-east-1:f1aaadfc-90cb-4380-bf52-f31ad1ba4915",
-      mandatorySignIn: false,
+      mandatorySignIn: true,
       authenticationFlowType: "USER_PASSWORD_AUTH"
     },
   

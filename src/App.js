@@ -19,56 +19,33 @@ function App() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    console.log("🚩 Setting up PubSub subscription...");
-
     async function setupSubscription() {
       try {
-        const user = await getCurrentUser();
-        console.log("👤 Current user:", user);
-
-        if (user) {
-          const session = await fetchAuthSession();
-          console.log("✅ Authenticated Cognito ID:", session.identityId);
-        
-          console.log("📡 Subscribing to topic: growTent/MKR1010_TempSensor_Alex/sensorData");
-        
-          const subscription = pubsub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData').subscribe({
-            next: (data) => {
-              console.log("📥 Full message object:", data);
-            
-              try {
-                const raw = data?.value;
-                console.log("📦 Raw data.value:", raw);
-            
-                const message = typeof raw === "string" ? JSON.parse(raw) : raw;
-                console.log("🌡️ Parsed temperature:", message);
-            
-                setMessages(prev => {
-                  console.log("🧪 Previous messages state:", prev);
-                  return [...prev, message];
-                });
-              } catch (err) {
-                console.error("❌ Error parsing message:", err);
-              }
-            },            
-            
-            error: (error) => console.error('❌ PubSub error:', error),
-            complete: () => console.log('✅ PubSub subscription completed'),
-          });
-        
-          return () => {
-            console.log("🛑 Unsubscribing from PubSub");
-            subscription.unsubscribe();
-          };
-        }
-        
-      } catch (error) {
-        console.error("❌ User not authenticated or error during PubSub setup:", error);
+        const currentUser = await getCurrentUser();
+        if (!currentUser) throw new Error("User not logged in");
+  
+        const session = await fetchAuthSession();
+        console.log("✅ Authenticated Cognito ID:", session.identityId);
+  
+        const subscription = pubsub.subscribe('growTent/MKR1010_TempSensor_Alex/sensorData').subscribe({
+          next: (data) => {
+            console.log("📥 Incoming message:", data);
+            // handle message...
+          },
+          error: (err) => console.error("❌ PubSub error:", err),
+          complete: () => console.log("✅ PubSub subscription completed")
+        });
+  
+        return () => subscription.unsubscribe();
+  
+      } catch (err) {
+        console.error("❌ User not authenticated or error during PubSub setup:", err);
       }
     }
-
+  
     setupSubscription();
   }, []);
+  
 
   return (
     <Authenticator>
