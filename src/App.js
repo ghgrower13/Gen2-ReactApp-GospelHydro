@@ -42,11 +42,15 @@ function App() {
             
                 const message = typeof raw === "string" ? JSON.parse(raw) : raw;
                 console.log("🌡️ Parsed temperature:", message);
-                setMessages(prev => [...prev, message]);
+            
+                setMessages(prev => {
+                  console.log("🧪 Previous messages state:", prev);
+                  return [...prev, message];
+                });
               } catch (err) {
                 console.error("❌ Error parsing message:", err);
               }
-            },
+            },            
             
             error: (error) => console.error('❌ PubSub error:', error),
             complete: () => console.log('✅ PubSub subscription completed'),
@@ -68,21 +72,27 @@ function App() {
 
   return (
     <Authenticator>
-      {({ signOut, user }) => (
-        <div className="App">
-          <header className="App-header">
-            <h2>Welcome, {user?.username}</h2>
-            <button onClick={signOut}>Sign Out</button>
-            <h3>📡 IoT Messages:</h3>
-            <ul>
-              {messages.map((msg, index) => (
-                <li key={index}>{JSON.stringify(msg)}</li>
-              ))}
-            </ul>
-          </header>
-        </div>
-      )}
-    </Authenticator>
+  {({ signOut, user }) => (
+    <div className="App">
+      <header className="App-header">
+        <h2>Welcome, {user?.username}</h2>
+        <button onClick={signOut}>Sign Out</button>
+        <h3>📡 IoT Messages:</h3>
+        
+        <ul>
+          {messages.length === 0 && <li>❌ No messages received</li>}
+          {messages.map((msg, index) => (
+            <li key={index}>
+              🌡️ Temp C: {msg.temperature_C}, Temp F: {msg.temperature_F}
+            </li>
+          ))}
+        </ul>
+        
+      </header>
+    </div>
+  )}
+</Authenticator>
+
   );
 }
 
